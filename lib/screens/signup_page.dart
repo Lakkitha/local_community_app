@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:local_community_app/re_widgets/resue.dart';
 import 'package:local_community_app/screens/home_page.dart';
@@ -59,8 +60,19 @@ class _SignUpState extends State<SignUpPage> {
                 height: 20,
               ),
               signInSignUpButton(context, false, () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const HomePage()));
+                FirebaseAuth.instance
+                    .createUserWithEmailAndPassword(
+                        email: _emailTextController.text,
+                        password: _passwordTextController.text)
+                    .then((value) {
+                  print("User Created");
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomePage()));
+                }).onError((error, stackTrace) {
+                  print("Error {$error.toString()}");
+                });
               })
             ]),
           ),

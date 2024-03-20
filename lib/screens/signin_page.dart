@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:local_community_app/re_widgets/resue.dart';
 import 'package:local_community_app/screens/home_page.dart';
@@ -42,8 +44,17 @@ class _SigninPageState extends State<SigninPage> {
                     _passwordTextController),
                 SizedBox(height: 20),
                 signInSignUpButton(context, true, () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => HomePage()));
+                  FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: _emailTextController.text,
+                          password: _passwordTextController.text)
+                      .then((value) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomePage()));
+                  }).onError((error, stackTrace) {
+                    print("Error: ${error}");
+                  });
+                  ;
                 }),
                 singUpOption()
               ],
