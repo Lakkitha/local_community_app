@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:local_community_app/screens/signin_page.dart';
+import 'package:local_community_app/re_widgets/navbar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,15 +18,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Center(
           child: ElevatedButton(
-        child: Text("Logout"),
-        onPressed: () {
-          FirebaseAuth.instance.signOut().then((value) {
-            print("Signed Out");
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => SigninPage()));
-          });
-        },
-      )),
+            child: Text("Logout"),
+            onPressed: () {
+              FirebaseAuth.instance.signOut().then((value) {
+                print("Signed Out");
+                Navigator.push(
+                    context, MaterialPageRoute(builder: (context) => SigninPage()));
+              });
+            },
+          )),
     );
   }
 }

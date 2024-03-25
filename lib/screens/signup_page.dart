@@ -4,6 +4,8 @@ import 'package:local_community_app/re_widgets/resue.dart';
 import 'package:local_community_app/screens/home_page.dart';
 import 'package:local_community_app/utilis/colors.dart';
 
+import '../re_widgets/navbar.dart';
+
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
@@ -69,7 +71,7 @@ class _SignUpState extends State<SignUpPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const HomePage()));
+                          builder: (context) => const NavBar()));
                 }).onError((error, stackTrace) {
                   print("Error {$error.toString()}");
                 });

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:local_community_app/re_widgets/navbar.dart';
 import 'package:local_community_app/re_widgets/resue.dart';
 import 'package:local_community_app/screens/home_page.dart';
 import 'package:local_community_app/screens/signup_page.dart';
@@ -50,7 +51,7 @@ class _SigninPageState extends State<SigninPage> {
                           password: _passwordTextController.text)
                       .then((value) {
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => HomePage()));
+                        MaterialPageRoute(builder: (context) => const NavBar()));
                   }).onError((error, stackTrace) {
                     print("Error: ${error}");
                   });
