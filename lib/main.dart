@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:local_community_app/screens/signin_page.dart';
+import 'package:local_community_app/auth/auth_gate.dart';
+import 'package:local_community_app/auth/login_or_register.dart';
+import 'package:local_community_app/themes/light_mode.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -16,10 +18,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Local Community',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const SigninPage(),
+      theme: LightMode,
+      home: const AuthGate(),
     );
   }
 }
