@@ -95,7 +95,7 @@ class EventPage extends StatelessWidget {
                   // Add your event registration logic here
                   print('Button pressed');
                 },
-                child: Text('Register'),
+                child: Text('Create'),
               ),
             ),
           ],
