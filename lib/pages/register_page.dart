@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:local_community_app/auth/auth_service.dart';
-import 'package:local_community_app/utilis/buttons.dart';
-import 'package:local_community_app/utilis/textfields.dart';
+import 'package:local_community_app/Components/button.dart';
+import 'package:local_community_app/Components/textfield.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _pwController = TextEditingController();
   final TextEditingController _confrimpwController = TextEditingController();
@@ -44,90 +44,122 @@ class RegisterPage extends StatelessWidget {
   }
 
   @override
+  State<RegisterPage> createState() => _registerpageState();
+}
+
+class _registerpageState extends State<RegisterPage> {
+  //TextControllers
+  final TextEditingController usernamecontroller = TextEditingController();
+
+  final TextEditingController _emailController = TextEditingController();
+
+  final TextEditingController _pwController = TextEditingController();
+
+  final TextEditingController confirmpasswordcontroller =
+      TextEditingController();
+
+  //register method
+  void register() {
+    //show progress
+    showDialog(
+      context: context,
+      builder: (context) => const Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            //logo
-            Icon(
-              Icons.message,
-              size: 60,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-
-            const SizedBox(height: 50),
-
-            //welcome back massage
-            Text(
-              "Create An Account",
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontSize: 16,
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.person,
+                size: 70,
+                color: Color.fromARGB(255, 32, 50, 80),
               ),
-            ),
+              const SizedBox(height: 20),
+              Text(
+                "Local Community",
+                style: TextStyle(fontSize: 20),
+              ),
 
-            const SizedBox(height: 25),
-            //email input
+              const SizedBox(height: 50),
+              //username
+              textfield(
+                  hintText: "Username",
+                  obscureText: false,
+                  controller: usernamecontroller),
 
-            MyTextField(
-              hintText: "Email Address",
-              obscureText: false,
-              controller: _emailController,
-            ),
+              const SizedBox(height: 10),
+              //Email
+              textfield(
+                  hintText: "Email",
+                  obscureText: false,
+                  controller: _emailController),
 
-            const SizedBox(height: 15),
+              const SizedBox(height: 10),
+              //password
+              textfield(
+                  hintText: "Password",
+                  obscureText: true,
+                  controller: _pwController),
 
-            //password input
-            MyTextField(
-              hintText: "Password",
-              obscureText: true,
-              controller: _pwController,
-            ),
+              const SizedBox(height: 10),
+              //confirm password
+              textfield(
+                  hintText: "Confirm Password",
+                  obscureText: true,
+                  controller: confirmpasswordcontroller),
 
-            const SizedBox(height: 15),
+              const SizedBox(height: 10),
 
-            //confirm password input
-
-            MyTextField(
-              hintText: "Confirm Password",
-              obscureText: true,
-              controller: _confrimpwController,
-            ),
-
-            const SizedBox(height: 15),
-            //login button
-
-            MyButtons(
-              text: "Register",
-              onTap: () => register(context),
-            ),
-
-            const SizedBox(height: 25),
-            //register button
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Already a member? ",
-                  style:
-                      TextStyle(color: Theme.of(context).colorScheme.primary),
-                ),
-                GestureDetector(
-                  onTap: onTap,
-                  child: Text(
-                    "Login Nigger",
+              //forgot password
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    "Forgot password?",
                     style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.primary),
+                        color: Theme.of(context).colorScheme.secondary),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+
+              const SizedBox(height: 25),
+
+              //Register button
+              button(
+                text: "Register",
+                onTap: register,
+              ),
+
+              const SizedBox(
+                height: 25,
+              ),
+
+              //Already have an account text
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Already have an account?"),
+                  GestureDetector(
+                    onTap: widget.onTap,
+                    child: const Text("Login",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

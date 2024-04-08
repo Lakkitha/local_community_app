@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:local_community_app/auth/auth_gate.dart';
-import 'package:local_community_app/themes/light_mode.dart';
+import 'package:local_community_app/Themes/light_mode.dart';
+import 'package:local_community_app/pages/event_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,8 +18,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Local Community',
-      theme: LightMode,
-      home: const AuthGate(),
+      theme: lightmode,
+      home: EventPage(),
     );
   }
 }
