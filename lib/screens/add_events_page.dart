@@ -92,8 +92,7 @@ class _AddEventPageState extends State<AddEventPage> {
                         _addEventCard();
                       }
                     },
-                    child: Text('Add Event',
-                        style: TextStyle(fontSize: 16, color: Colors.white)),
+                    child: Text('Add Event', style: TextStyle(fontSize: 16, color: Colors.white)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pink,
                       padding: EdgeInsets.symmetric(vertical: 16),
@@ -115,8 +114,7 @@ class _AddEventPageState extends State<AddEventPage> {
     );
   }
 
-  Widget _buildDateField(String labelText, DateTime selectedDate,
-      Function(DateTime) onDateChanged) {
+  Widget _buildDateField(String labelText, DateTime selectedDate, Function(DateTime) onDateChanged) {
     return InkWell(
       onTap: () => _selectDate(context, selectedDate, onDateChanged),
       child: InputDecorator(
@@ -137,6 +135,7 @@ class _AddEventPageState extends State<AddEventPage> {
 
   Widget _buildDescriptionField(String labelText) {
     final int wordLimit = 20; // Set the desired word limit
+    final List<String> words = _descriptionController.text.split(' ');
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,25 +148,131 @@ class _AddEventPageState extends State<AddEventPage> {
           ),
           maxLines: _showFullDescription ? null : 3,
         ),
-        if (_descriptionController.text.isNotEmpty &&
-            _descriptionController.text
-                .split(' ')
-                .length > wordLimit)
+        if (words.length > wordLimit && !_showFullDescription)
           Align(
             alignment: Alignment.centerRight,
             child: TextButton(
               onPressed: () {
                 setState(() {
-                  _showFullDescription = !_showFullDescription;
+                  _showFullDescription = true;
                 });
               },
-              child: Text(
-                _showFullDescription ? 'Read less' : 'Read more',
-                style: TextStyle(color: Colors.blue),
-              ),
+              child: Text('Read more'),
             ),
+          ),
+        if (!_showFullDescription)
+          Text(
+            words.take(wordLimit).join(' ') + (words.length > wordLimit ? '...' : ''),
+            style: TextStyle(color: Colors.grey),
           ),
       ],
     );
+  }
+
+  Future<void> _selectDate(BuildContext context, DateTime initialDate, Function(DateTime) onDateChanged) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != initialDate) {
+      onDateChanged(picked);
+    }
+  }
+
+  void _addEventCard() {
+    setState(() {
+      _eventCards.add(
+        SizedBox(
+          width: double.infinity,
+          child: Card(
+            elevation: 4.0,
+            margin: EdgeInsets.symmetric(vertical: 8.0),
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          _titleController.text,
+                          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 8.0),
+                        Text('Start Date: ${_startDate.toString().split(' ')[0]}'),
+                        Text('End Date: ${_endDate.toString().split(' ')[0]}'),
+                        Text('Location: ${_locationController.text}'),
+                        Text('Description: ${_descriptionController.text}'),
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () {
+                      setState(() {
+                        _eventCards.removeLast(); // Remove the last added event card
+                      });
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      // Clear form fields
+      _titleController.clear();
+      _descriptionController.clear();
+      _locationController.clear();
+      _showFullDescription = false;
+      _startDate = DateTime.now();
+      _endDate = DateTime.now();
+      _image = null;
+    });
+  }
+
+  Widget _buildEventDetailsSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Event Details',
+          style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 8.0),
+        ..._eventCards,
+      ],
+    );
+  }
+
+  Widget _imagePickerButton() {
+    return ElevatedButton.icon(
+      onPressed: _getImage,
+      icon: Icon(
+        Icons.add_a_photo,
+        color: Colors.white, // Set icon color to white
+      ),
+      label: Text(
+        'Add Image',
+        style: TextStyle(color: Colors.white),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.pink,
+      ),
+    );
+  }
+
+  Future<void> _getImage() async {
+    final ImagePicker _picker = ImagePicker();
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (image != null) {
+        _image = File(image.path);
+      }
+    });
   }
 }
