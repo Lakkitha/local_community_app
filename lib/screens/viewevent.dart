@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 class ViewEvent extends StatefulWidget {
   final String eventName;
   final String eventDate;
-  final String eventDescription;
+  final String eventOrganizer;
   final String eventImage; // Path to the event image
 
   const ViewEvent({
     Key? key,
     required this.eventName,
     required this.eventDate,
-    required this.eventDescription,
+    required this.eventOrganizer,
     required this.eventImage,
   }) : super(key: key);
 
@@ -21,7 +21,7 @@ class ViewEvent extends StatefulWidget {
 class _ViewEventState extends State<ViewEvent> {
   String newEventName = '';
   String newEventDate = '';
-  String newEventDescription = '';
+  String newEventOrganizer = '';
   String newEventImage = ''; // Path to the event image
 
   List<Map<String, String>> events = [
@@ -29,8 +29,7 @@ class _ViewEventState extends State<ViewEvent> {
       'eventName': "Something",
       'eventStartDate': "01/01/2023",
       'eventEndDate': "01/03/2023",
-      'eventDescription':
-          "Something Someiniddsijfdsif dsfdsfdfdsfdsfds f dsfdsf dfsd fdf sd fdsfdsf dsf dsfdsf dsfds dsf dsfdf dsf asdsa sd sad as dsa d sad as das d sad sa ds das d sad as das d sad as dsa dsa d",
+      'eventOrganizer': "John Doe",
       'eventImage': 'assets/images/img.jpg',
     },
     // Add more events here
@@ -67,7 +66,7 @@ class _ViewEventState extends State<ViewEvent> {
               eventName: event['eventName']!,
               eventStartDate: event['eventStartDate']!,
               eventEndDate: event['eventEndDate']!,
-              eventDescription: event['eventDescription']!,
+              eventOrganizer: event['eventOrganizer']!,
               eventImage: event['eventImage']!,
             ),
           SizedBox(height: 80), // Space for the add event button
@@ -80,109 +79,178 @@ class _ViewEventState extends State<ViewEvent> {
     required String eventName,
     required String eventStartDate,
     required String eventEndDate,
-    required String eventDescription,
+    required String eventOrganizer,
     required String eventImage,
   }) {
-    String truncatedDescription = truncateDescription(
-        eventDescription, 25); // Truncate description if more than 25 words
-    bool isTruncated = eventDescription != truncatedDescription;
-    bool isPastEndDate = isEventPastEndDate(eventEndDate);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: InkWell(
-        onTap: () {
-          // Add onTap functionality if needed
-        },
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[200], // Grey background color
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(
-              color: isPastEndDate ? Colors.red : Colors.grey[200]!,
-              width: 2,
-            ),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        eventName,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+      child: Stack(
+        children: [
+          InkWell(
+            onTap: () {
+              // Add onTap functionality if needed
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12), // Rounded edges
+                border: Border.all(
+                  color: Colors.grey[200]!,
+                  width: 2,
+                ),
+              ),
+              child: ClipRRect(
+                // ClipRRect to make it rounded
+                borderRadius: BorderRadius.circular(18),
+                child: Stack(
+                  children: [
+                    // Event Image
+                    Stack(
+                      children: [
+                        Image.asset(
+                          eventImage,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: 200, // Adjust height as needed
                         ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        '$eventStartDate - $eventEndDate',
-                        style: TextStyle(
-                          fontSize: 16,
+                        Positioned(
+                          top: 8,
+                          right: 8, // Moved to the top right
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(
+                                8), // Adjust the radius as needed
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 4,
+                                horizontal: 8,
+                              ),
+                              color: Color.fromARGB(255, 166, 166, 166)
+                                  .withOpacity(0.5),
+                              child: Text(
+                                '📍Location',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        truncatedDescription,
-                        style: TextStyle(
-                          fontSize: 16,
+                      ],
+                    ),
+                    // Details Frame
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft:
+                                Radius.circular(12), // Rounded bottom corners
+                            bottomRight:
+                                Radius.circular(12), // Rounded bottom corners
+                          ),
+                          color: Colors.black
+                              .withOpacity(0.3), // Transparent black
                         ),
-                      ),
-                      if (isTruncated)
-                        Row(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Icon(Icons.more_horiz,
-                                color: Colors
-                                    .grey), // Three dots icon in grey color
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // Profile Picture
+                                Container(
+                                  width: 80,
+                                  height: 80,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
+                                    image: DecorationImage(
+                                      fit: BoxFit.cover,
+                                      image: AssetImage(eventImage),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                // Event Title and Organizer
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        eventName,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                      Text(
+                                        'Organizer: $eventOrganizer',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                // Event Times
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.calendar_view_month_outlined,
+                                            color: Colors.white),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          '$eventStartDate',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.calendar_view_month_outlined,
+                                            color: Colors.white),
+                                        SizedBox(width: 4),
+                                        Text(
+                                          '$eventEndDate',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ],
                         ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: 16),
-                Expanded(
-                  flex: 1,
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.asset(
-                      eventImage,
-                      fit: BoxFit.cover,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
     );
-  }
-
-  String truncateDescription(String description, int wordLimit) {
-    List<String> words = description.split(' ');
-    if (words.length > wordLimit) {
-      return words.sublist(0, wordLimit).join(' ') + '';
-    } else {
-      return description;
-    }
-  }
-
-  bool isEventPastEndDate(String endDateString) {
-    try {
-      // Convert end date string to DateTime object
-      DateTime endDate = DateTime.parse(endDateString);
-      // Get current date
-      DateTime currentDate = DateTime.now();
-      // Check if current date is after end date
-      return currentDate.isAfter(endDate);
-    } catch (e) {
-      print('Error parsing end date: $e');
-      return false; // Return false if there's an error parsing the date
-    }
   }
 }

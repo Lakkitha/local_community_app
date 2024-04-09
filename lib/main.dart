@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
       home: ViewEvent(
         eventName: "Something",
         eventDate: "01/01/2023",
-        eventDescription:
-            "Something Someiniddsijfdsif dsfdsfdfdsfdsfds f dsfdsf dfsd fdf sd fdsfdsf dsf dsfdsf dsfds dsf dsfdf dsf asdsa sd sad as dsa d sad as das d sad sa ds das d sad as das d sad as dsa dsa d",
+        eventOrganizer:
+            "Something ",
         eventImage: 'assets/images/img.jpg',
       ),
     );
