@@ -1,18 +1,7 @@
 import 'package:flutter/material.dart';
+import 'screens/add_events_page.dart';
 
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-
-import 'screens/login.dart';
-import 'screens/signup.dart';
-
-Future<void> main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
+void main() {
   runApp(MyApp());
 }
 
@@ -20,12 +9,17 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Local Community', // Replace 'Your App Title' with your actual app title
+      title: 'Your App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: SignupPage(), // Set LoginPage as the home screen
-      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text('Your App'),
+        ),
+        body: AddEventPage(), // Here's where you use AddEventPage
+      ),
     );
   }
 }
