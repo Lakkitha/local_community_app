@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:local_community_app/auth/auth_gate.dart';
+import 'package:local_community_app/pages/profile.dart';
 import 'package:local_community_app/themes/light_mode.dart';
 
 Future<void> main() async {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Local Community',
       theme: LightMode,
-      home: const AuthGate(),
+      home: const ProfilePage(),
     );
   }
 }
