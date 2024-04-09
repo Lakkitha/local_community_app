@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AddEventPage extends StatefulWidget {
   @override
@@ -17,6 +18,7 @@ class _AddEventPageState extends State<AddEventPage> {
   DateTime _endDate = DateTime.now();
   List<Widget> _eventCards = [];
   File? _image;
+  Set<Marker> _markers = {};
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +84,19 @@ class _AddEventPageState extends State<AddEventPage> {
                     },
                   ),
                   SizedBox(height: 16.0),
+                  ElevatedButton.icon(
+                    onPressed: _showMapSelectionDialog,
+                    icon: Icon(
+                      Icons.location_on,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      'Select from Map',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: _buildButtonStyle(),
+                  ),
+                  SizedBox(height: 16.0),
                   _buildDescriptionField('Description'),
                   SizedBox(height: 16.0),
                   _imagePickerButton(),
@@ -92,7 +107,10 @@ class _AddEventPageState extends State<AddEventPage> {
                         _addEventCard();
                       }
                     },
-                    child: Text('Add Event', style: TextStyle(fontSize: 16, color: Colors.white)),
+                    child: Text(
+                      'Add Event',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.pink,
                       padding: EdgeInsets.symmetric(vertical: 16),
@@ -260,9 +278,7 @@ class _AddEventPageState extends State<AddEventPage> {
         'Add Image',
         style: TextStyle(color: Colors.white),
       ),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.pink,
-      ),
+      style: _buildButtonStyle(),
     );
   }
 
@@ -273,6 +289,72 @@ class _AddEventPageState extends State<AddEventPage> {
       if (image != null) {
         _image = File(image.path);
       }
+    });
+  }
+
+  void _showMapSelectionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Location from Map'),
+          content: Container(
+            height: 400,
+            width: 400,
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: LatLng(6.822245248616214, 80.04159435772131),
+                zoom: 15,
+              ),
+              onMapCreated: (GoogleMapController controller) {},
+              onTap: _addMarkerFromDialog,
+              markers: _markers,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(null); // Return none when canceled
+              },
+              child: Text('CANCEL'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('CONFIRM'),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white, backgroundColor: Colors.pink, // Set the text color
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  ButtonStyle _buildButtonStyle() {
+    return ElevatedButton.styleFrom(
+      backgroundColor: Colors.pink,
+    );
+  }
+
+  void _addMarkerFromDialog(LatLng position) {
+    setState(() {
+      _markers.clear(); // Clear existing markers
+      _markers.add(
+        Marker(
+          markerId: MarkerId(position.toString()),
+          position: position,
+          infoWindow: InfoWindow(
+            title: 'Selected Location',
+            snippet: '${position.latitude}, ${position.longitude}',
+          ),
+        ),
+      );
+
+      // Update location text field with latitude and longitude
+      _locationController.text = '${position.latitude}, ${position.longitude}';
     });
   }
 }
