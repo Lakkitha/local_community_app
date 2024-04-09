@@ -1,65 +1,26 @@
 {
   "project_info": {
-    "project_number": "16655839339",
-    "project_id": "local-community-app-d68b5",
-    "storage_bucket": "local-community-app-d68b5.appspot.com"
+    "project_number": "740606550126",
+    "project_id": "localcommunity-f9804",
+    "storage_bucket": "localcommunity-f9804.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:16655839339:android:622614fca20cebaa17812e",
-        "android_client_info": {
-          "package_name": "com.example.local_community"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "16655839339-h14pnrllmke6or3leu7q1hpru4df9r0t.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyAN59LZ5GIplzkKz8Fld9zXf8AJwDsGSDo"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "16655839339-56kp8kkbof90qcu8t5t45oasd056burj.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:16655839339:android:6f4d0857e1090bf317812e",
+        "mobilesdk_app_id": "1:740606550126:android:df57848fa8205882c3867f",
         "android_client_info": {
           "package_name": "com.example.local_community_app"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "16655839339-h14pnrllmke6or3leu7q1hpru4df9r0t.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAN59LZ5GIplzkKz8Fld9zXf8AJwDsGSDo"
+          "current_key": "AIzaSyB6U-59XyzgBzt_4eN2JV68K_g2f3-gR2Q"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "16655839339-56kp8kkbof90qcu8t5t45oasd056burj.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
