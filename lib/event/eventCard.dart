@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import '../pages/EventDetails.dart';
 
 class EventCard extends StatelessWidget {
@@ -8,6 +7,8 @@ class EventCard extends StatelessWidget {
   final String eventEndDate;
   final String eventOrganizer;
   final String eventImage;
+  final String eventLocation;
+  final String eventDetails;
 
   const EventCard({
     Key? key,
@@ -16,6 +17,8 @@ class EventCard extends StatelessWidget {
     required this.eventEndDate,
     required this.eventOrganizer,
     required this.eventImage,
+    required this.eventLocation,
+    required this.eventDetails,
   }) : super(key: key);
 
   @override
@@ -25,12 +28,20 @@ class EventCard extends StatelessWidget {
       child: Stack(
         children: [
           InkWell(
-            onTap: () {
+            onTap: ()  {
               //Redirect to Event Details
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EventDetails(),
+                  builder: (context) => EventDetails(
+                    eventName: eventName,
+                    eventStartDate: eventStartDate,
+                    eventEndDate: eventEndDate,
+                    eventOrganizer: eventOrganizer,
+                    eventImage: eventImage,
+                    eventLocation: eventLocation,
+                    eventDetails: eventDetails,
+                  ),
                 ),
               );
             },

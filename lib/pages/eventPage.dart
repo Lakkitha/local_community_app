@@ -14,11 +14,15 @@ class _EventPageState extends State<EventPage> {
   List<Map<String, dynamic>> events = [
     // Add your events here
     {
-      'eventName': 'Event 1',
+      'eventName': 'Brithday Party',
       'eventStartDate': '01/01/2023',
       'eventEndDate': '02/01/2023',
-      'eventOrganizer': 'Organizer 1',
+      'eventOrganizer': 'Anya',
       'eventImage': 'assets/images/img.jpg',
+      'eventLocation': 'Colombo, Sri Lanka',
+      'eventDetails': 'lorem ipsum dolor sit amet consectetur adipiscing elit'
+          'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+          'ut enim ad minim veniam quis nostrud exercitation ullamco laboris',
     },
     {
       'eventName': 'Event 2',
@@ -26,6 +30,10 @@ class _EventPageState extends State<EventPage> {
       'eventEndDate': '02/01/2023',
       'eventOrganizer': 'Organizer 2',
       'eventImage': 'assets/images/img.jpg',
+      'eventLocation': 'Location 2',
+      'eventDetails': 'lorem ipsum dolor sit amet consectetur adipiscing elit'
+          'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+          'ut enim ad minim veniam quis nostrud exercitation ullamco laboris',
     },
     {
       'eventName': 'Event 3',
@@ -33,77 +41,69 @@ class _EventPageState extends State<EventPage> {
       'eventEndDate': '02/01/2023',
       'eventOrganizer': 'Organizer 3',
       'eventImage': 'assets/images/img.jpg',
+      'eventLocation': 'Location 3',
+      'eventDetails': 'lorem ipsum dolor sit amet consectetur adipiscing elit'
+          'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
+          'ut enim ad minim veniam quis nostrud exercitation ullamco laboris',
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WillPopScope(
-        onWillPop: () async => false, // Prevent popping the page
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              expandedHeight: 10.0,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                centerTitle: true,
-                title: Text("Events",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    )),
-              ),
-              bottom: PreferredSize(
-                preferredSize: Size.fromHeight(50.0),
-                child: Padding(
-                  padding: EdgeInsets.all(10.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: CupertinoSlidingSegmentedControl<int>(
-                          children: {
-                            0: Text('Global'),
-                            1: Text('Local'),
-                          },
-                          groupValue: filtervalue,
-                          onValueChanged: (int? newValue) {
-                            setState(() {
-                              //Use the Filter logic here
-                              filtervalue = newValue!;
-                              print("Filter Value: $filtervalue");
-                            });
-                          },
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.event),
-                        onPressed: () {
-                          // Add Followed Event Logic here
-                        },
-                      ),
-                    ],
+      appBar: AppBar(
+        title: Text("Events",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 16.0,
+            )),
+        automaticallyImplyLeading: false,
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(50.0),
+          child: Padding(
+            padding: EdgeInsets.all(10.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: CupertinoSlidingSegmentedControl<int>(
+                    children: {
+                      0: Text('Global'),
+                      1: Text('Local'),
+                    },
+                    groupValue: filtervalue,
+                    onValueChanged: (int? newValue) {
+                      setState(() {
+                        //Use the Filter logic here
+                        filtervalue = newValue!;
+                        print("Filter Value: $filtervalue");
+                      });
+                    },
                   ),
                 ),
-              ),
+                IconButton(
+                  icon: Icon(Icons.event),
+                  onPressed: () {
+                    // Add Followed Event Logic here
+                  },
+                ),
+              ],
             ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  return EventCard(
-                    eventName: events[index]['eventName'],
-                    eventStartDate: events[index]['eventStartDate'],
-                    eventEndDate: events[index]['eventEndDate'],
-                    eventOrganizer: events[index]['eventOrganizer'],
-                    eventImage: events[index]['eventImage'],
-                  );
-                },
-                childCount: events.length,
-              ),
-            ),
-          ],
+          ),
         ),
+      ),
+      body: ListView.builder(
+        itemCount: events.length,
+        itemBuilder: (BuildContext context, int index) {
+          return EventCard(
+            eventName: events[index]['eventName'],
+            eventStartDate: events[index]['eventStartDate'],
+            eventEndDate: events[index]['eventEndDate'],
+            eventOrganizer: events[index]['eventOrganizer'],
+            eventImage: events[index]['eventImage'],
+            eventLocation: events[index]['eventLocation'],
+            eventDetails: events[index]['eventDetails'],
+          );
+        },
       ),
     );
   }

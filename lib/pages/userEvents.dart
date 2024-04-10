@@ -72,6 +72,8 @@ class _UserEventState extends State<UserEvent> {
               eventEndDate: event['eventEndDate']!,
               eventOrganizer: event['eventOrganizer']!,
               eventImage: event['eventImage']!,
+              eventLocation: event['eventLocation']!,
+              eventDetails: event['eventDetails']!,
             ),
           SizedBox(height: 80), // Space for the add event button
         ],
