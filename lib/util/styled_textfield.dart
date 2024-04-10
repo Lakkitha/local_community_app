@@ -5,16 +5,18 @@ class StyledTextField extends StatelessWidget {
   final String labelText;
   final bool obscureText;
   final ValueChanged<String>? onChanged;
-  final double? verticalPadding; // New optional parameter for vertical padding
-  final double? horizontalPadding; // New optional parameter for horizontal padding
+  final TextEditingController? controller; // New controller parameter
+  final double? verticalPadding;
+  final double? horizontalPadding;
 
   const StyledTextField({
     Key? key,
     required this.hintText,
     required this.labelText,
     this.obscureText = false,
-	this.onChanged,
-	this.verticalPadding,
+    this.onChanged,
+    this.controller, // Initialize the controller parameter
+    this.verticalPadding,
     this.horizontalPadding,
   }) : super(key: key);
 
@@ -22,26 +24,27 @@ class StyledTextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextField(
       obscureText: obscureText,
-	  onChanged: onChanged,
+      onChanged: onChanged,
+      controller: controller, // Set the controller property
       decoration: InputDecoration(
         hintText: hintText,
         labelText: labelText,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(4), // Adjust the border radius to make the text box slimmer
+          borderRadius: BorderRadius.circular(4),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.blue), // Change the border color when focused
+          borderSide: BorderSide(color: Colors.blue),
         ),
-		contentPadding: EdgeInsets.symmetric(
-          vertical: verticalPadding ?? 20, // Use the provided value or default to 20
-          horizontal: horizontalPadding ?? 12, // Use the provided value or default to 12
+        contentPadding: EdgeInsets.symmetric(
+          vertical: verticalPadding ?? 20,
+          horizontal: horizontalPadding ?? 12,
         ),
         hintStyle: TextStyle(
-          color: Colors.grey, // Change the hint text color
-          fontStyle: FontStyle.italic, // Optionally, change the font style
+          color: Colors.grey,
+          fontStyle: FontStyle.italic,
         ),
-		labelStyle: TextStyle(
-          color: Colors.grey, // Change the hint text color
+        labelStyle: TextStyle(
+          color: Colors.grey,
         ),
       ),
     );
