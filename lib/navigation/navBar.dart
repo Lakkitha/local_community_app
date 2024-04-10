@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../pages/createEventPage.dart';
 import '../pages/eventPage.dart';
 import '../pages/profilePage.dart';
+import '../pages/addEventsPage.dart';
 
 
 class NavBar extends StatelessWidget {
@@ -40,7 +41,7 @@ class NavigationController extends GetxController {
   final screens = [
   //set the pages here
     const EventPage(),
-    const CreateEventPage(),
+    AddEventPage(),
     const ProfilePage()
   ];
 }
