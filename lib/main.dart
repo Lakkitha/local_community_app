@@ -6,7 +6,7 @@ import 'firebase_options.dart';
 
 import 'auth/login.dart';
 import 'auth/signup.dart';
-import 'screens/home.dart';
+import 'navigation/navbar.dart';
 
 Future<void> main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       home: AuthenticationWrapper(),
       debugShowCheckedModeBanner: false,
       routes: {
-        '/home': (context) => HomePage(),
+        '/home': (context) => NavBar(),
         '/login': (context) => LoginPage(),
         '/signup': (context) => SignupPage(),
         // Add more named routes here if needed
@@ -48,7 +48,7 @@ class AuthenticationWrapper extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return CircularProgressIndicator(); // Placeholder for loading state
         } else if (snapshot.hasData) {
-          return HomePage(); // Navigate to home page if user is logged in
+          return NavBar(); // Navigate to home page if user is logged in
         } else {
           return LoginPage(); // Navigate to login page if user is not logged in
         }

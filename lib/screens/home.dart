@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../util/styled_button.dart'; // Assuming the path to the StyledButton class is correct
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../database/userdb.dart';
 
 class HomePage extends StatelessWidget {
