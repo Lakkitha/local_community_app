@@ -18,7 +18,8 @@ class _AddEventPageState extends State<AddEventPage> {
   DateTime _endDate = DateTime.now();
   List<Widget> _eventCards = [];
   File? _image;
-  Set<Marker> _markers = {};
+  Set<Marker> _markers = Set();
+  late GoogleMapController? _mapController;
 
   @override
   Widget build(BuildContext context) {
@@ -306,9 +307,18 @@ class _AddEventPageState extends State<AddEventPage> {
                 target: LatLng(6.822245248616214, 80.04159435772131),
                 zoom: 15,
               ),
-              onMapCreated: (GoogleMapController controller) {},
+
+              markers: _markers.map((e) => e).toSet(),
+              mapType: MapType.normal,
+              zoomControlsEnabled: true,
+              myLocationButtonEnabled: true,
               onTap: _addMarkerFromDialog,
-              markers: _markers,
+              
+              onMapCreated: (GoogleMapController controller) 
+              {
+                _mapController = controller;
+                _mapController!.moveCamera(CameraUpdate.newLatLng(_markers.first.position));
+              },
             ),
           ),
           actions: <Widget>[
@@ -340,6 +350,7 @@ class _AddEventPageState extends State<AddEventPage> {
   }
 
   void _addMarkerFromDialog(LatLng position) {
+    
     setState(() {
       _markers.clear(); // Clear existing markers
       _markers.add(
@@ -351,10 +362,15 @@ class _AddEventPageState extends State<AddEventPage> {
             snippet: '${position.latitude}, ${position.longitude}',
           ),
         ),
-      );
+      );  
+
+      print("Tapped marker at " + position.latitude.toString() + ", " + position.longitude.toString());
 
       // Update location text field with latitude and longitude
       _locationController.text = '${position.latitude}, ${position.longitude}';
+
+      // Move the camera to the tapped position
+      _mapController!.animateCamera(CameraUpdate.newLatLng(position));
     });
   }
 }
