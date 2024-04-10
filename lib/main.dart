@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
         eventOrganizer:
             "Something ",
         eventImage: 'assets/images/img.jpg',
+        numberOfFollowers: 23,
       ),
     );
   }

@@ -5,6 +5,7 @@ class ViewEvent extends StatefulWidget {
   final String eventDate;
   final String eventOrganizer;
   final String eventImage; // Path to the event image
+  final int numberOfFollowers; // Number of followers
 
   const ViewEvent({
     Key? key,
@@ -12,6 +13,7 @@ class ViewEvent extends StatefulWidget {
     required this.eventDate,
     required this.eventOrganizer,
     required this.eventImage,
+    required this.numberOfFollowers,
   }) : super(key: key);
 
   @override
@@ -31,6 +33,7 @@ class _ViewEventState extends State<ViewEvent> {
       'eventEndDate': "01/03/2023",
       'eventOrganizer': "John Doe",
       'eventImage': 'assets/images/img.jpg',
+      'numberOfFollowers': '100', // Example number of followers
     },
     // Add more events here
   ];
@@ -68,6 +71,7 @@ class _ViewEventState extends State<ViewEvent> {
               eventEndDate: event['eventEndDate']!,
               eventOrganizer: event['eventOrganizer']!,
               eventImage: event['eventImage']!,
+              numberOfFollowers: int.parse(event['numberOfFollowers']!),
             ),
           SizedBox(height: 80), // Space for the add event button
         ],
@@ -81,6 +85,7 @@ class _ViewEventState extends State<ViewEvent> {
     required String eventEndDate,
     required String eventOrganizer,
     required String eventImage,
+    required int numberOfFollowers, // New parameter for number of followers
   }) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -95,7 +100,7 @@ class _ViewEventState extends State<ViewEvent> {
                 borderRadius: BorderRadius.circular(12), // Rounded edges
                 border: Border.all(
                   color: Colors.grey[200]!,
-                  width: 2,
+                  width: 1,
                 ),
               ),
               child: ClipRRect(
@@ -110,7 +115,7 @@ class _ViewEventState extends State<ViewEvent> {
                           eventImage,
                           fit: BoxFit.cover,
                           width: double.infinity,
-                          height: 200, // Adjust height as needed
+                          height: 300, // Adjust height as needed
                         ),
                         Positioned(
                           top: 8,
@@ -139,36 +144,34 @@ class _ViewEventState extends State<ViewEvent> {
                     ),
                     // Details Frame
                     Positioned(
-                      bottom: 0,
+                      top: 152, // Adjust the value to move the content up or down
                       left: 0,
                       right: 0,
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
-                            bottomLeft:
-                                Radius.circular(12), // Rounded bottom corners
-                            bottomRight:
-                                Radius.circular(12), // Rounded bottom corners
+                            bottomLeft: Radius.circular(12),
+                            bottomRight: Radius.circular(12),
                           ),
-                          color: Colors.black
-                              .withOpacity(0.3), // Transparent black
+                          color: Colors.black.withOpacity(0.3),
                         ),
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 // Profile Picture
                                 Container(
-                                  width: 80,
-                                  height: 80,
+                                  width: 70,
+                                  height: 70,
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     border: Border.all(
                                       color: Colors.white,
-                                      width: 2,
+                                      width: 1.5,
                                     ),
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
@@ -180,22 +183,21 @@ class _ViewEventState extends State<ViewEvent> {
                                 // Event Title and Organizer
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         eventName,
                                         style: TextStyle(
-                                          fontSize: 18,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,
                                         ),
                                       ),
-                                      SizedBox(height: 5),
+                                      SizedBox(height: 4),
                                       Text(
                                         'Organizer: $eventOrganizer',
                                         style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 13,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -215,7 +217,7 @@ class _ViewEventState extends State<ViewEvent> {
                                         Text(
                                           '$eventStartDate',
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -230,7 +232,7 @@ class _ViewEventState extends State<ViewEvent> {
                                         Text(
                                           '$eventEndDate',
                                           style: TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 14,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -239,6 +241,45 @@ class _ViewEventState extends State<ViewEvent> {
                                   ],
                                 ),
                               ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    //Followers Frame
+                    Positioned(
+                      bottom: -5,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(12),
+                            bottomRight: Radius.circular(12),
+                          ),
+                          color: Colors.white, // White background color
+                        ),
+                        padding: const EdgeInsets.fromLTRB(16.0, 12.0, 16.0,
+                            16.0), // Added padding to the bottom
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            /* Text(
+                              'Followers',
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ), */
+                            Icon(Icons.person),
+                            Text(
+                              '$numberOfFollowers', // Display number of followers
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                             ),
                           ],
                         ),
