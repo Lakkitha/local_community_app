@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../database/userdb.dart';
+import '../event/eventCard.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -18,120 +19,123 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: null, // Remove the app bar
       body: Stack(
         children: [
-          Column(
-            children: [
-              Expanded(
-                flex: 7, // Takes 70% of the height
-                child: FutureBuilder<Map<String, dynamic>?>(
-                  future: Database().getCurrentUserData(uid!),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                    if (snapshot.hasError) {
-                      return Center(
-                        child: Text('Error: ${snapshot.error}'),
-                      );
-                    }
-                    if (snapshot.data == null) {
-                      return Center(
-                        child: Text('No user data found'),
-                      );
-                    }
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.7, // Set 70% of screen height
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/backgroundpropic.jpg'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: DefaultTextStyle(
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            FutureBuilder<Map<String, dynamic>?>(
+                              future: Database().getCurrentUserData(uid!),
+                              builder: (context, snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return CircularProgressIndicator();
+                                }
+                                if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                }
+                                if (snapshot.data == null) {
+                                  return Text('No user data found');
+                                }
 
-                    final username = snapshot.data!['username'] as String;
-                    final email = snapshot.data!['email'] as String;
-                    // You can add more user information fields here
+                                final username = snapshot.data!['username'] as String;
+                                final email = snapshot.data!['email'] as String;
+                                // You can add more user information fields here
 
-                    // Dummy values for events count, followers, and followings
-                    final eventsCount = 10;
-                    final followersCount = 100;
-                    final followingsCount = 50;
+                                // Dummy values for events count, followers, and followings
+                                final eventsCount = 10;
+                                final followersCount = 100;
+                                final followingsCount = 50;
 
-                    return Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage('assets/images/backgroundpropic.jpg'), // Set your background image here
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20.0),
-                          child: DefaultTextStyle(
-                            style: TextStyle(color: Colors.white, fontSize: 20), // Set default text color and size for the first section
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end, // Align content at the bottom
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '$username',
-                                  style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold), // Increased font size and bold for username
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 10),
-                                Text(
-                                  '$email',
-                                  style: TextStyle(fontSize: 20.0),
-                                  textAlign: TextAlign.center,
-                                ),
-                                SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                return Column(
                                   children: [
-                                    _buildStatistic('Events', eventsCount.toString()),
-                                    _buildStatistic('Followers', followersCount.toString()),
-                                    _buildStatistic('Followings', followingsCount.toString()),
+                                    Text(
+                                      '$username',
+                                      style: TextStyle(fontSize: 28.0, fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 10),
+                                    Text(
+                                      '$email',
+                                      style: TextStyle(fontSize: 20.0),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        _buildStatistic('Events', eventsCount.toString()),
+                                        _buildStatistic('Followers', followersCount.toString()),
+                                        _buildStatistic('Followings', followingsCount.toString()),
+                                      ],
+                                    ),
+                                    SizedBox(height: 20),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        _buildIconButton(Icons.person_add, 'Follow', () {
+                                          // Implement follow functionality here
+                                        }),
+                                        _buildIconButton(Icons.message, 'Message', () {
+                                          // Implement message functionality here
+                                        }),
+                                      ],
+                                    ),
                                   ],
-                                ),
-                                SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    _buildIconButton(Icons.person_add, 'Follow', () {
-                                      // Implement follow functionality here
-                                    }),
-                                    _buildIconButton(Icons.message, 'Message', () {
-                                      // Implement message functionality here
-                                    }),
-                                  ],
-                                ),
-                              ],
+                                );
+                              },
                             ),
-                          ),
+                          ],
                         ),
                       ),
-                    );
-                  },
+                    ),
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 3, // Takes 30% of the height
-                child: Padding(
+                Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         'My Events',
-                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold), // Increased font size for the title
+                        style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 10),
-                      _buildEventCard(),
+                      EventCard(
+                        eventName: 'My Event',
+                        eventStartDate: '12/04/2024',
+                        eventEndDate: '20/04/2024',
+                        eventOrganizer: 'Me',
+                        eventImage: 'assets/images/img.jpg',
+                        eventLocation: 'Event Location',
+                        eventDetails: 'Description: This is an event that I posted shown on my profile.',
+                      ),
                     ],
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Positioned(
             top: 40,
             left: 10,
             child: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white), // Make back button white
+              icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -141,7 +145,7 @@ class _ProfilePageState extends State<ProfilePage> {
             top: 40,
             right: 10,
             child: IconButton(
-              icon: Icon(Icons.settings, color: Colors.white), // Make gear icon white
+              icon: Icon(Icons.settings, color: Colors.white),
               onPressed: () {
                 // Navigate to settings page or show settings dialog
               },
@@ -160,7 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Text(
             value,
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white), // Make text white
+            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
           ),
           SizedBox(height: 5),
           Text(
@@ -192,53 +196,6 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildEventCard() {
-    return Card(
-      elevation: 4.0,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'My Event',
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red), // Delete button icon
-                  onPressed: () {
-                    // Implement delete functionality here
-                  },
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Start Date: 12/04/2024',
-              style: TextStyle(fontSize: 16.0, color: Colors.grey),
-            ),
-            Text(
-              'End Date: 20/04/2024',
-              style: TextStyle(fontSize: 16.0, color: Colors.grey),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Description: This is a event that i posted shown on my profile.',
-              style: TextStyle(fontSize: 16.0),
-            ),
-            SizedBox(height: 10)
-          ],
-        ),
       ),
     );
   }
