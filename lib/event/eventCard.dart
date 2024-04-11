@@ -47,15 +47,14 @@ class EventCard extends StatelessWidget {
             },
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12), // Rounded edges
                 border: Border.all(
                   color: Colors.grey[200]!,
                   width: 2,
                 ),
               ),
               child: ClipRRect(
-                // ClipRRect to make it rounded
-                borderRadius: BorderRadius.circular(18),
+                // Removed ClipRRect to make it square
+                borderRadius: BorderRadius.zero,
                 child: Stack(
                   children: [
                     // Event Image
@@ -99,12 +98,6 @@ class EventCard extends StatelessWidget {
                       right: 0,
                       child: Container(
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft:
-                            Radius.circular(12), // Rounded bottom corners
-                            bottomRight:
-                            Radius.circular(12), // Rounded bottom corners
-                          ),
                           color: Colors.black
                               .withOpacity(0.3), // Transparent black
                         ),
