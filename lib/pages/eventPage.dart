@@ -15,28 +15,6 @@ class _EventPageState extends State<EventPage> {
   int _pageSize = 10;
   bool _isLoading = false;
   List<Map<String, dynamic>> events = [
-    {
-      'eventName': 'Brithday Party',
-      'eventStartDate': '01/01/2023',
-      'eventEndDate': '02/01/2023',
-      'eventOrganizer': 'Anya',
-      'eventImage': 'assets/images/pic5.jpg',
-      'eventLocation': 'Colombo, Sri Lanka',
-      'eventDetails': 'lorem ipsum dolor sit amet consectetur adipiscing elit'
-          'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
-          'ut enim ad minim veniam quis nostrud exercitation ullamco laboris',
-    },
-    {
-      'eventName': 'Brithday Party',
-      'eventStartDate': '01/01/2023',
-      'eventEndDate': '02/01/2023',
-      'eventOrganizer': 'Anya',
-      'eventImage': 'assets/images/pic5.jpg',
-      'eventLocation': 'Colombo, Sri Lanka',
-      'eventDetails': 'lorem ipsum dolor sit amet consectetur adipiscing elit'
-          'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'
-          'ut enim ad minim veniam quis nostrud exercitation ullamco laboris',
-    },
     // Add your events here
     // Assuming you have more events...
   ];
@@ -78,6 +56,24 @@ class _EventPageState extends State<EventPage> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _refreshData() async {
+    setState(() {
+      _currentPage = 0;
+      events.clear(); // Clear existing events
+    });
+
+    // Simulate loading delay
+    await Future.delayed(Duration(seconds: 2));
+
+    setState(() {
+      // Add logic to fetch new events and populate the list
+      // For demonstration purpose, I'm just adding some dummy events again
+      events.addAll([
+        // Add more events here
+      ]);
+    });
   }
 
   List<Map<String, dynamic>> getPaginatedEvents() {
@@ -134,27 +130,30 @@ class _EventPageState extends State<EventPage> {
           ),
         ),
       ),
-      body: ListView.builder(
-        controller: _scrollController,
-        itemCount: getPaginatedEvents().length + (_isLoading ? 1 : 0),
-        itemBuilder: (BuildContext context, int index) {
-          if (index == getPaginatedEvents().length && _isLoading) {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else {
-            final event = getPaginatedEvents()[index];
-            return EventCard(
-              eventName: event['eventName'],
-              eventStartDate: event['eventStartDate'],
-              eventEndDate: event['eventEndDate'],
-              eventOrganizer: event['eventOrganizer'],
-              eventImage: event['eventImage'],
-              eventLocation: event['eventLocation'],
-              eventDetails: event['eventDetails'],
-            );
-          }
-        },
+      body: RefreshIndicator(
+        onRefresh: _refreshData,
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: getPaginatedEvents().length + (_isLoading ? 1 : 0),
+          itemBuilder: (BuildContext context, int index) {
+            if (index == getPaginatedEvents().length && _isLoading) {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            } else {
+              final event = getPaginatedEvents()[index];
+              return EventCard(
+                eventName: event['eventName'],
+                eventStartDate: event['eventStartDate'],
+                eventEndDate: event['eventEndDate'],
+                eventOrganizer: event['eventOrganizer'],
+                eventImage: event['eventImage'],
+                eventLocation: event['eventLocation'],
+                eventDetails: event['eventDetails'],
+              );
+            }
+          },
+        ),
       ),
     );
   }
