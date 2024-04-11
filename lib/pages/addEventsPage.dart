@@ -13,11 +13,6 @@ import 'package:permission_handler/permission_handler.dart';
 import '../util/styled_button.dart';
 import '../util/styled_textfield.dart';
 
-String? imageUrl;
-File? imageFile;
-bool hasUploaded = false; // Flag to track if an image has been uploaded
-bool isUploading = false; // Flag to track if image is currently being uploaded
-
 class ImageUpload extends StatefulWidget {
   @override
   _ImageUploadState createState() => _ImageUploadState();
@@ -25,6 +20,11 @@ class ImageUpload extends StatefulWidget {
 
 class _ImageUploadState extends State<ImageUpload> 
 {
+  String? imageUrl;
+  File? imageFile;
+  bool hasUploaded = false; // Flag to track if an image has been uploaded
+  bool isUploading = false; // Flag to track if image is currently being uploaded
+  
   @override
   Widget build(BuildContext context) 
   {
@@ -140,8 +140,6 @@ class _ImageUploadState extends State<ImageUpload>
 
   Future<void> uploadImage() async 
   {
-    isUploading = true; // Show loading indicator
-
     // Get the UID of the current user
     String? uid = FirebaseAuth.instance.currentUser?.uid;
 
@@ -167,7 +165,6 @@ class _ImageUploadState extends State<ImageUpload>
       imageFile = null;
 
       hasUploaded = false;
-      isUploading = false;
 
       print("Image url uploaded: " + imageUrl.toString());
       print("Is Uploading: " + isUploading.toString());
@@ -257,6 +254,7 @@ class _AddEventPageState extends State<AddEventPage> {
   List<Widget> _eventCards = [];
   Set<Marker> _markers = Set();
   late GoogleMapController? _mapController;
+  bool _isUploading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -266,7 +264,7 @@ class _AddEventPageState extends State<AddEventPage> {
         body: Stack(
           children: [
             _buildFormContent(), // Render form content
-            if (isUploading) // Render loading indicator if uploading
+            if (_isUploading) // Render loading indicator if uploading
               _buildLoadingIndicator(),
           ],
         ),
@@ -354,11 +352,22 @@ class _AddEventPageState extends State<AddEventPage> {
               _imagePickerButton(),
               SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   if (_formKey.currentState!.validate()) 
                   {
+                    setState(() {
+                      _isUploading = true;
+                    });
+
+                    print("Is uploading on events page: " + _isUploading.toString());
                     _ImageUploadState upload = _ImageUploadState();
-                    upload.uploadImage();
+                    await upload.uploadImage();
+
+                    setState(() {
+                      _isUploading = false;
+                    });
+
+                    print("Is uploading on events page: " + _isUploading.toString());
                     
                     _addEventCard();
                   }
