@@ -18,7 +18,7 @@ class _EventPageState extends State<EventPage> {
       'eventStartDate': '01/01/2023',
       'eventEndDate': '02/01/2023',
       'eventOrganizer': 'Anya',
-      'eventImage': 'assets/images/img.jpg',
+      'eventImage': 'assets/images/pic5.jpg',
       'eventLocation': 'Colombo, Sri Lanka',
       'eventDetails': 'lorem ipsum dolor sit amet consectetur adipiscing elit'
           'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua'

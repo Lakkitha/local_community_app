@@ -12,6 +12,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../util/styled_button.dart';
 import '../util/styled_textfield.dart';
+import '../database/eventsdb.dart';
+
+File? imageFile;
+String? imageUrl;
 
 class ImageUpload extends StatefulWidget {
   @override
@@ -20,11 +24,9 @@ class ImageUpload extends StatefulWidget {
 
 class _ImageUploadState extends State<ImageUpload> 
 {
-  String? imageUrl;
-  File? imageFile;
   bool hasUploaded = false; // Flag to track if an image has been uploaded
   bool isUploading = false; // Flag to track if image is currently being uploaded
-  
+
   @override
   Widget build(BuildContext context) 
   {
@@ -151,6 +153,9 @@ class _ImageUploadState extends State<ImageUpload>
       // Generate the image name using the user's UID and random number
       var imageName = '$uid-$randomNumber.png'; // Combine UID and random number with .png extension
 
+      if (imageFile == null)
+        return;
+      
       // Upload to Firebase
       var file = imageFile!;
       
@@ -165,8 +170,7 @@ class _ImageUploadState extends State<ImageUpload>
       imageFile = null;
 
       hasUploaded = false;
-
-      print("Image url uploaded: " + imageUrl.toString());
+      
       print("Is Uploading: " + isUploading.toString());
     } 
     else 
@@ -363,11 +367,20 @@ class _AddEventPageState extends State<AddEventPage> {
                     _ImageUploadState upload = _ImageUploadState();
                     await upload.uploadImage();
 
+                    // Get the current user
+                    User? user = FirebaseAuth.instance.currentUser;
+
+                    EventsDatabase db = EventsDatabase();
+                    await db.storeUserEventData(user!.uid, _titleController.text, _startDate.toIso8601String().split('T')[0], 
+                                                _endDate.toIso8601String().split('T')[0]
+                                                , _markers.first.position, _descriptionController.text, imageUrl!, 0);
+
                     setState(() {
                       _isUploading = false;
                     });
 
                     print("Is uploading on events page: " + _isUploading.toString());
+                    print("Image url uploaded: " + imageUrl.toString());
                     
                     _addEventCard();
                   }

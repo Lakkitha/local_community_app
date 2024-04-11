@@ -437,7 +437,7 @@ class _SecondScreenState extends State<SecondScreen> {
 
         // Store additional user information in Firestore
         Database db = Database();
-        await db.storeUserInfo(user.uid, _email!, _username!, _selectedDate!.toIso8601String(), _gender!);
+        await db.storeUserInfo(user.uid, _email!, _username!, _selectedDate!.toIso8601String().split('T')[0], _gender!);
         
         Navigator.pushNamed(context, "/home");
       }
