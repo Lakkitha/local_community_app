@@ -91,20 +91,6 @@ class _EventPageState extends State<EventPage> {
           ),
         ),
       ),
-      body: ListView.builder(
-        itemCount: events.length,
-        itemBuilder: (BuildContext context, int index) {
-          return EventCard(
-            eventName: events[index]['eventName'],
-            eventStartDate: events[index]['eventStartDate'],
-            eventEndDate: events[index]['eventEndDate'],
-            eventOrganizer: events[index]['eventOrganizer'],
-            eventImage: events[index]['eventImage'],
-            eventLocation: events[index]['eventLocation'],
-            eventDetails: events[index]['eventDetails'],
-          );
-        },
-      ),
     );
   }
 }
