@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:local_community_app/database/eventsdb.dart';
 import '../event/eventCard.dart';
 
 class EventPage extends StatefulWidget {
@@ -24,13 +25,14 @@ class _EventPageState extends State<EventPage> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_scrollListener);
+    _loadMoreData();
+    //_scrollController.addListener(_scrollListener);
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_scrollListener);
-    _scrollController.dispose();
+    //_scrollController.removeListener(_scrollListener);
+    //_scrollController.dispose();
     super.dispose();
   }
 
@@ -42,46 +44,60 @@ class _EventPageState extends State<EventPage> {
     }
   }
 
-  void _loadMoreData() async {
-    if (!_isLoading) {
-      setState(() {
-        _isLoading = true;
-      });
-
-      // Simulate loading delay
-      await Future.delayed(Duration(seconds: 2));
-
-      setState(() {
-        _currentPage++;
-        _isLoading = false;
-      });
-    }
-  }
-
-  Future<void> _refreshData() async {
+  Future<void> _refreshData() async 
+  {
     setState(() {
       _currentPage = 0;
       events.clear(); // Clear existing events
     });
 
-    // Simulate loading delay
-    await Future.delayed(Duration(seconds: 2));
-
-    setState(() {
+    setState(() 
+    {
       // Add logic to fetch new events and populate the list
       // For demonstration purpose, I'm just adding some dummy events again
-      events.addAll([
-        // Add more events here
-      ]);
+      _loadMoreData();
     });
   }
 
-  List<Map<String, dynamic>> getPaginatedEvents() {
+  void _loadMoreData() async 
+  {
+    if (!_isLoading) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      print("Load data");
+
+      await _fetchEvents();
+
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _fetchEvents() async 
+  {
+    List<Map<String, dynamic>> newEvents = await EventsDatabase.getAllEvents();
+    if (newEvents.isNotEmpty) {
+      setState(() {
+        events.addAll(newEvents);
+
+        _currentPage++;
+      });
+    }
+  }
+
+  List<Map<String, dynamic>> getPaginatedEvents() 
+  {
     int startIndex = _currentPage * _pageSize;
     int endIndex = startIndex + _pageSize;
-    if (startIndex >= events.length) {
+
+    if (startIndex >= events.length) 
+    {
       return [];
     }
+
     return events.sublist(startIndex, endIndex.clamp(0, events.length));
   }
 
@@ -148,23 +164,24 @@ class _EventPageState extends State<EventPage> {
         onRefresh: _refreshData,
         child: ListView.builder(
           controller: _scrollController,
-          itemCount: getPaginatedEvents().length + (_isLoading ? 1 : 0),
+          itemCount: events.length + (_isLoading ? 1 : 0),
           itemBuilder: (BuildContext context, int index) {
-            if (index == getPaginatedEvents().length && _isLoading) {
+            if (index == events.length && _isLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             } else {
-              final event = getPaginatedEvents()[index];
+              final event = events[index];
+              print(event);
               return EventCard(
-                eventId: event['eventId'],
-                eventName: event['eventName'],
-                eventStartDate: event['eventStartDate'],
-                eventEndDate: event['eventEndDate'],
-                eventOrganizer: event['eventOrganizer'],
-                eventImage: event['eventImage'],
-                eventLocation: event['eventLocation'],
-                eventDetails: event['eventDetails'],
+                eventId: event['event_id'],
+                eventName: event['event_name'],
+                eventStartDate: event['start_date'],
+                eventEndDate: event['end_date'],
+                eventOrganizer: 'User',
+                eventImage: event['event_image'],
+                eventLocation: event['event_location'],
+                eventDetails: event['event_description'],
               );
             }
           },

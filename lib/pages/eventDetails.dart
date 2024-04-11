@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:local_community_app/location/eventLocation.dart';
+import 'package:local_community_app/util/styled_button.dart';
 
 class EventDetails extends StatefulWidget {
   final String eventId;
@@ -113,30 +114,30 @@ class _EventDetailsState extends State<EventDetails> {
                 ),
                 child: Text(widget.eventDetails, style: TextStyle(fontSize: 16)),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 25),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
+                  StyledButton(
+                    text: isFollowing ? 'Unfollow' : 'Follow',
+                    verticalPadding: 10,
                     onPressed: () {
                       setState(() {
                         //use this to track following
                         isFollowing = !isFollowing;
                       });
                     },
-                    child: Text(isFollowing ? 'Unfollow' : 'Follow'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                    ),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Placeholder for location button
+                  StyledButton(
+                    text: "Get Location",
+                    verticalPadding: 10,
+                    onPressed: () 
+                    {
+                      setState(() {
+                        // open location gmap
+                      });
                     },
-                    child: Text('Get Location'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                    ),
+                    
                   ),
                 ],
               ),
