@@ -68,6 +68,7 @@ class _UserEventState extends State<UserEvent> {
         children: [
           for (var event in events)
             EventCard(
+              eventId: event['event_id']!,
               eventName: event['eventName']!,
               eventStartDate: event['eventStartDate']!,
               eventEndDate: event['eventEndDate']!,

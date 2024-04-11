@@ -157,6 +157,7 @@ class _EventPageState extends State<EventPage> {
             } else {
               final event = getPaginatedEvents()[index];
               return EventCard(
+                eventId: event['eventId'],
                 eventName: event['eventName'],
                 eventStartDate: event['eventStartDate'],
                 eventEndDate: event['eventEndDate'],

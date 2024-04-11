@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:local_community_app/location/eventLocation.dart';
 
 class EventDetails extends StatefulWidget {
+  final String eventId;
   final String eventName;
   final String eventStartDate;
   final String eventEndDate;
@@ -13,6 +14,7 @@ class EventDetails extends StatefulWidget {
 
   const EventDetails({
     Key? key,
+    required this.eventId,
     required this.eventName,
     required this.eventStartDate,
     required this.eventEndDate,
