@@ -265,6 +265,19 @@ class _AddEventPageState extends State<AddEventPage> {
     return Theme(
       data: ThemeData(primarySwatch: Colors.blue),
       child: Scaffold(
+        appBar: AppBar(
+          leading: Padding(
+            padding: const EdgeInsets.only(top: 5.0, left: 20.0, right: 4.0, bottom: 4.0),
+            child: Image.asset('assets/images/logo.png'), // Replace with your logo image path
+          ),
+          title: Text(
+            'Add Event',
+            style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          elevation: 0.0,
+          backgroundColor: Colors.white,
+        ),
         body: Stack(
           children: [
             _buildFormContent(), // Render form content
@@ -285,19 +298,6 @@ class _AddEventPageState extends State<AddEventPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Title Widget
-              Container(
-                alignment: Alignment.center,
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-                child: Text(
-                  'Add Event',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black, // Adjust the color as needed
-                  ),
-                ),
-              ),
               StyledTextField(
                 controller: _titleController,
                 hintText: 'Enter event name',
@@ -390,7 +390,7 @@ class _AddEventPageState extends State<AddEventPage> {
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.pink,
+                  backgroundColor: Colors.lightBlueAccent,
                   padding: EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -594,8 +594,8 @@ class _AddEventPageState extends State<AddEventPage> {
               zoomControlsEnabled: true,
               myLocationButtonEnabled: true,
               onTap: _addMarkerFromDialog,
-              
-              onMapCreated: (GoogleMapController controller) 
+
+              onMapCreated: (GoogleMapController controller)
               {
                 _mapController = controller;
 
@@ -619,7 +619,7 @@ class _AddEventPageState extends State<AddEventPage> {
               },
               child: Text('CONFIRM'),
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white, backgroundColor: Colors.pink, // Set the text color
+                foregroundColor: Colors.white, backgroundColor: Colors.lightBlueAccent, // Set the text color
               ),
             ),
           ],
@@ -630,7 +630,7 @@ class _AddEventPageState extends State<AddEventPage> {
 
   ButtonStyle _buildButtonStyle() {
     return ElevatedButton.styleFrom(
-      backgroundColor: Colors.pink,
+      backgroundColor: Colors.lightBlueAccent,
     );
   }
 

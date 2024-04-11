@@ -20,6 +20,7 @@ class NavBar extends StatelessWidget {
           selectedIndex: controller.selectedIndex.value,
           onDestinationSelected: (index) =>
           controller.selectedIndex.value = index,
+          indicatorColor: Colors.lightBlueAccent,
           // Add the Icons and Labels for the Navigation Bar
           destinations: const [
             NavigationDestination(
