@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:local_community_app/database/eventsdb.dart';
+import 'package:local_community_app/pages/settings_page.dart';
 import '../database/userdb.dart';
 import '../event/eventCard.dart';
 
@@ -153,21 +154,14 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           Positioned(
             top: 40,
-            left: 10,
-            child: IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ),
-          Positioned(
-            top: 40,
             right: 10,
             child: IconButton(
               icon: Icon(Icons.settings, color: Colors.white),
               onPressed: () {
-                // Navigate to settings page or show settings dialog
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SettingsPage()),
+                );
               },
             ),
           ),
@@ -177,46 +171,46 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-  Widget _buildStatistic(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            value,
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          SizedBox(height: 5),
-          Text(
-            label,
-            style: TextStyle(fontSize: 16.0, color: Colors.white),
-          ),
-        ],
-      ),
-    );
-  }
+Widget _buildStatistic(String label, String value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Text(
+          value,
+          style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        SizedBox(height: 5),
+        Text(
+          label,
+          style: TextStyle(fontSize: 16.0, color: Colors.white),
+        ),
+      ],
+    ),
+  );
+}
 
-  Widget _buildIconButton(IconData icon, String label, VoidCallback onPressed) {
-    return InkWell(
-      onTap: onPressed,
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            size: 30,
+Widget _buildIconButton(IconData icon, String label, VoidCallback onPressed) {
+  return InkWell(
+    onTap: onPressed,
+    child: Column(
+      children: [
+        Icon(
+          icon,
+          size: 30,
+          color: Colors.blue,
+        ),
+        SizedBox(height: 3),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
             color: Colors.blue,
+            fontWeight: FontWeight.bold,
           ),
-          SizedBox(height: 3),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.blue,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
