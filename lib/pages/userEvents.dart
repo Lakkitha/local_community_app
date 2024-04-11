@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../event/eventCard.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserEvent extends StatefulWidget {
   final String eventName;

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:local_community_app/location/eventLocation.dart';
+
 import '../pages/eventDetails.dart';
 
-class EventCard extends StatelessWidget {
+class EventCard extends StatefulWidget {
   final String eventName;
   final String eventStartDate;
   final String eventEndDate;
@@ -22,46 +25,69 @@ class EventCard extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<EventCard> createState() => _EventCardState();
+}
+
+class _EventCardState extends State<EventCard> {
+  String address = '';
+
+  @override
+  void initState() 
+  {
+    super.initState();
+    fetchAddress();
+  }
+
+  Future<void> fetchAddress() async {
+    GeoPoint geoPoint = EventLocation.convertStringToGeoPoint(widget.eventLocation);
+    String? result = await EventLocation.getEventStreet(context, geoPoint.latitude, geoPoint.longitude);
+    setState(() {
+      address = result ?? '';
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Stack(
         children: [
           InkWell(
-            onTap: ()  {
+            onTap: () {
               //Redirect to Event Details
               Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (context) => EventDetails(
-                    eventName: eventName,
-                    eventStartDate: eventStartDate,
-                    eventEndDate: eventEndDate,
-                    eventOrganizer: eventOrganizer,
-                    eventImage: eventImage,
-                    eventLocation: eventLocation,
-                    eventDetails: eventDetails,
+                    eventName: widget.eventName,
+                    eventStartDate: widget.eventStartDate,
+                    eventEndDate: widget.eventEndDate,
+                    eventOrganizer: widget.eventOrganizer,
+                    eventImage: widget.eventImage,
+                    eventLocation: widget.eventLocation,
+                    eventDetails: widget.eventDetails,
                   ),
                 ),
               );
             },
             child: Container(
               decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12), // Rounded edges
                 border: Border.all(
                   color: Colors.grey[200]!,
                   width: 2,
                 ),
               ),
               child: ClipRRect(
-                // Removed ClipRRect to make it square
-                borderRadius: BorderRadius.zero,
+                // ClipRRect to make it rounded
+                borderRadius: BorderRadius.circular(18),
                 child: Stack(
                   children: [
                     // Event Image
                     Stack(
                       children: [
-                        Image.asset(
-                          eventImage,
+                        Image.network(
+                          widget.eventImage,
                           fit: BoxFit.cover,
                           width: double.infinity,
                           height: 200, // Adjust height as needed
@@ -80,7 +106,7 @@ class EventCard extends StatelessWidget {
                               color: Color.fromARGB(255, 166, 166, 166)
                                   .withOpacity(0.5),
                               child: Text(
-                                '📍Location',
+                                address,
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -98,6 +124,12 @@ class EventCard extends StatelessWidget {
                       right: 0,
                       child: Container(
                         decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft:
+                            Radius.circular(12), // Rounded bottom corners
+                            bottomRight:
+                            Radius.circular(12), // Rounded bottom corners
+                          ),
                           color: Colors.black
                               .withOpacity(0.3), // Transparent black
                         ),
@@ -120,7 +152,7 @@ class EventCard extends StatelessWidget {
                                     ),
                                     image: DecorationImage(
                                       fit: BoxFit.cover,
-                                      image: AssetImage(eventImage),
+                                      image: NetworkImage(widget.eventImage),
                                     ),
                                   ),
                                 ),
@@ -132,7 +164,7 @@ class EventCard extends StatelessWidget {
                                     CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        eventName,
+                                        widget.eventName,
                                         style: TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
@@ -141,7 +173,7 @@ class EventCard extends StatelessWidget {
                                       ),
                                       SizedBox(height: 5),
                                       Text(
-                                        'Organizer: $eventOrganizer',
+                                        'Organizer: ${widget.eventOrganizer}',
                                         style: TextStyle(
                                           fontSize: 16,
                                           color: Colors.white,
@@ -161,7 +193,7 @@ class EventCard extends StatelessWidget {
                                             color: Colors.white),
                                         SizedBox(width: 4),
                                         Text(
-                                          '$eventStartDate',
+                                          '${widget.eventStartDate}',
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.white,
@@ -176,7 +208,7 @@ class EventCard extends StatelessWidget {
                                             color: Colors.white),
                                         SizedBox(width: 4),
                                         Text(
-                                          '$eventEndDate',
+                                          '${widget.eventEndDate}',
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.white,

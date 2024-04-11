@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:local_community_app/database/eventsdb.dart';
 import '../database/userdb.dart';
 import '../event/eventCard.dart';
 
@@ -116,14 +117,33 @@ class _ProfilePageState extends State<ProfilePage> {
                         style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 10),
-                      EventCard(
-                        eventName: 'My Event',
-                        eventStartDate: '12/04/2024',
-                        eventEndDate: '20/04/2024',
-                        eventOrganizer: 'Me',
-                        eventImage: 'assets/images/img.jpg',
-                        eventLocation: 'Event Location',
-                        eventDetails: 'Description: This is an event that I posted shown on my profile.',
+                      FutureBuilder<List<Map<String, dynamic>>>(
+                        future: EventsDatabase().getUserEvents(uid!),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return CircularProgressIndicator();
+                          }
+                          if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          }
+                          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                            return Text('No events found');
+                          }
+
+                          return Column(
+                            children: snapshot.data!.map((eventData) {
+                              return EventCard(
+                                eventName: eventData['event_name'],
+                                eventStartDate: eventData['start_date'],
+                                eventEndDate: eventData['end_date'],
+                                eventOrganizer: 'Me', // Assuming the user is the organizer
+                                eventImage: eventData['event_image'],
+                                eventLocation: eventData['event_location'],
+                                eventDetails: eventData['event_description'],
+                              );
+                            }).toList(),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -155,6 +175,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+}
 
   Widget _buildStatistic(String label, String value) {
     return Padding(
@@ -199,4 +220,3 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
-}

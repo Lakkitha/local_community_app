@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:local_community_app/location/eventLocation.dart';
 
 class EventDetails extends StatefulWidget {
   final String eventName;
@@ -26,6 +28,21 @@ class EventDetails extends StatefulWidget {
 
 class _EventDetailsState extends State<EventDetails> {
   bool isFollowing = false;
+  String address = '';
+
+  @override
+  void initState() {
+    super.initState();
+    fetchAddress();
+  }
+
+  Future<void> fetchAddress() async {
+    GeoPoint geoPoint = EventLocation.convertStringToGeoPoint(widget.eventLocation);
+    String? result = await EventLocation.getEventLocation(context, geoPoint.latitude, geoPoint.longitude);
+    setState(() {
+      address = result ?? '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +59,7 @@ class _EventDetailsState extends State<EventDetails> {
             children: <Widget>[
               ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),
-                child: Image.asset(widget.eventImage),
+                child: Image.network(widget.eventImage),
               ),
               SizedBox(height: 16),
               Text(widget.eventName, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
@@ -75,7 +92,14 @@ class _EventDetailsState extends State<EventDetails> {
                 children: [
                   Icon(Icons.location_on_outlined, color: Colors.blue),
                   SizedBox(width: 4),
-                  Text('Location: ${widget.eventLocation}', style: TextStyle(fontSize: 16)),
+                  Expanded(
+                    child: Text(
+                      'Location: ${address}',
+                      style: TextStyle(fontSize: 16),
+                      overflow: TextOverflow.ellipsis, // Handle overflow with ellipsis
+                      maxLines: 2, // Set maximum number of lines to 2
+                    ),
+                  ),
                 ],
               ),
               SizedBox(height: 16),
