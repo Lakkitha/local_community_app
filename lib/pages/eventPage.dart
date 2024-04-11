@@ -89,12 +89,25 @@ class _EventPageState extends State<EventPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "Events",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 16.0,
+        leading: Padding(
+
+          padding: const EdgeInsets.only(top: 5.0, left: 20.0, right: 4.0, bottom: 4.0),
+          child: Image.asset('assets/images/logo.png'), // Replace with your logo image path
+        ),
+        title: TextField(
+          decoration: InputDecoration(
+            hintText: 'Search',
+            filled: true,
+            fillColor: Colors.white,
+            prefixIcon: Icon(Icons.search, color: Colors.grey),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide.none,
+            ),
           ),
+          onChanged: (value) {
+            // Implement your search logic here
+          },
         ),
         automaticallyImplyLeading: false,
         bottom: PreferredSize(
@@ -105,6 +118,7 @@ class _EventPageState extends State<EventPage> {
               children: [
                 Expanded(
                   child: CupertinoSlidingSegmentedControl<int>(
+                    thumbColor: Colors.lightBlueAccent,
                     children: {
                       0: Text('Global'),
                       1: Text('Local'),
