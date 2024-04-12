@@ -45,4 +45,25 @@ class Database
       return null;
     }
   }
+
+  Future<String?> getUsernameByUserId(String userId) async {
+    try {
+      // Get the user data using the user ID
+      Map<String, dynamic>? userData = await getCurrentUserData(userId);
+
+      // Check if user data exists and contains the username field
+      if (userData != null && userData.containsKey('username')) {
+        // Return the username
+        return userData['username'];
+      } else {
+        // User data does not exist or does not contain the username field
+        print('User data does not exist or username field is missing');
+        return null;
+      }
+    } catch (e) {
+      // Handle any errors
+      print('Error retrieving username: $e');
+      return null;
+    }
+  }
 }

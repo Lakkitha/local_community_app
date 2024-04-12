@@ -126,6 +126,7 @@ class EventsDatabase
 
 					if (eventData != null) {
 						eventData['event_id'] = eventDoc.id; // Add event ID to the map
+						eventData['user_id'] = userUid; // Add user ID to the map
 						events.add(eventData);
 					}
 				});
@@ -135,5 +136,92 @@ class EventsDatabase
 		}
 
 		return events;
+	}
+
+	Future<void> storeFollowedEvent(String uid, String userId, String eventid) async 
+	{
+		try 
+		{
+			await FirebaseFirestore.instance.collection('users').doc(uid).collection('followed_events').doc(eventid).set({
+				'eventid': eventid,
+				'userid': userId,
+			});
+			print('Event info stored in Firestore successfully');
+		} 
+		catch (e) 
+		{
+			print('Error storing event info in Firestore: $e');
+		}
+	}
+
+	Future<void> deleteFollowedEvent(String uid, String eventId) async 
+	{
+		try {
+			await FirebaseFirestore.instance
+					.collection('users')
+					.doc(uid)
+					.collection('followed_events')
+					.doc(eventId)
+					.delete();
+			print('Event info deleted from Firestore successfully');
+		} catch (e) {
+			print('Error deleting event info from Firestore: $e');
+		}
+	}
+
+	static Future<List<Map<String, dynamic>>> getAllFollowedEventsUser() async 
+	{
+		List<Map<String, dynamic>> events = [];
+
+		try {
+			// Get the current user's ID
+			String currentUserUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+			// Query the followed events collection of the current user
+			QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance
+				.collection('users')
+				.doc(currentUserUid) // Target the current user's document
+				.collection('followed_events') // Target the followed events collection
+				.get();
+
+			// Iterate through each followed event
+			eventsSnapshot.docs.forEach((eventDoc) {
+			Map<String, dynamic>? eventData = eventDoc.data() as Map<String, dynamic>?;
+
+			if (eventData != null) {
+				events.add(eventData);
+			}
+			});
+		} catch (e) {
+			print('Error retrieving events: $e');
+		}
+
+		return events;
+	}
+
+	// Function to check if the given event is followed by the current user
+	static Future<bool> isEventFollowed(String eventId) async 
+	{
+		try 
+		{
+			// Get the current user's ID
+			String currentUserUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+			// Query the followed events collection of the current user
+			QuerySnapshot eventsSnapshot = await FirebaseFirestore.instance
+				.collection('users')
+				.doc(currentUserUid) // Target the current user's document
+				.collection('followed_events') // Target the followed events collection
+				.where('eventid', isEqualTo: eventId) // Filter by eventid
+				.get();
+
+			// If any documents are found, the event is followed
+			return eventsSnapshot.docs.isNotEmpty;
+		} 
+		catch (e) 
+		{
+			print('Error checking if event is followed: $e');
+			return false;
+		}
 	}
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:local_community_app/database/eventsdb.dart';
+import 'package:local_community_app/database/userdb.dart';
 import '../event/eventCard.dart';
 
 class EventPage extends StatefulWidget {
@@ -173,15 +174,36 @@ class _EventPageState extends State<EventPage> {
             } else {
               final event = events[index];
               print(event);
-              return EventCard(
-                eventId: event['event_id'],
-                eventName: event['event_name'],
-                eventStartDate: event['start_date'],
-                eventEndDate: event['end_date'],
-                eventOrganizer: 'User',
-                eventImage: event['event_image'],
-                eventLocation: event['event_location'],
-                eventDetails: event['event_description'],
+
+              // Use FutureBuilder to asynchronously get the event organizer's username
+              return FutureBuilder<String?>(
+                future: Database().getUsernameByUserId(event['user_id']),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return ListTile(
+                      title: Text('Loading...'),
+                    );
+                  } else {
+                    if (snapshot.hasError) {
+                      return ListTile(
+                        title: Text('Error loading organizer'),
+                      );
+                    } else {
+                      String? organizer = snapshot.data;
+                      return EventCard(
+                        userId: event['user_id'],
+                        eventId: event['event_id'],
+                        eventName: event['event_name'],
+                        eventStartDate: event['start_date'],
+                        eventEndDate: event['end_date'],
+                        eventOrganizer: organizer ?? 'Unknown',
+                        eventImage: event['event_image'],
+                        eventLocation: event['event_location'],
+                        eventDetails: event['event_description'],
+                      );
+                    }
+                  }
+                },
               );
             }
           },

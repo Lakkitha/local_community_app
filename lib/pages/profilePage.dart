@@ -134,6 +134,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           return Column(
                             children: snapshot.data!.map((eventData) {
                               return EventCard(
+                                userId: uid!,
                                 eventId: eventData['event_id'],
                                 eventName: eventData['event_name'],
                                 eventStartDate: eventData['start_date'],

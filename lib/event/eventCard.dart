@@ -5,6 +5,7 @@ import 'package:local_community_app/location/eventLocation.dart';
 import '../pages/eventDetails.dart';
 
 class EventCard extends StatefulWidget {
+  final String userId;
   final String eventId;
   final String eventName;
   final String eventStartDate;
@@ -16,6 +17,7 @@ class EventCard extends StatefulWidget {
 
   const EventCard({
     Key? key,
+    required this.userId,
     required this.eventId,
     required this.eventName,
     required this.eventStartDate,
@@ -61,6 +63,7 @@ class _EventCardState extends State<EventCard> {
                 context,
                 MaterialPageRoute(
                   builder: (context) => EventDetails(
+                    userid: widget.userId,
                     eventId: widget.eventId,
                     eventName: widget.eventName,
                     eventStartDate: widget.eventStartDate,

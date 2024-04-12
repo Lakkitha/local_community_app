@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:local_community_app/database/eventsdb.dart';
 import 'package:local_community_app/location/eventLocation.dart';
 import 'package:local_community_app/util/styled_button.dart';
 
 class EventDetails extends StatefulWidget {
+  final String userid;
   final String eventId;
   final String eventName;
   final String eventStartDate;
@@ -15,6 +18,7 @@ class EventDetails extends StatefulWidget {
 
   const EventDetails({
     Key? key,
+    required this.userid,
     required this.eventId,
     required this.eventName,
     required this.eventStartDate,
@@ -37,6 +41,19 @@ class _EventDetailsState extends State<EventDetails> {
   void initState() {
     super.initState();
     fetchAddress();
+    checkIsFollowing();
+  }
+
+  Future<void> checkIsFollowing() async {
+    try {
+      String currentUserUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+      bool followed = await EventsDatabase.isEventFollowed(widget.eventId);
+      setState(() {
+        isFollowing = followed;
+      });
+    } catch (e) {
+      print('Error checking if event is followed: $e');
+    }
   }
 
   Future<void> fetchAddress() async {
@@ -49,6 +66,9 @@ class _EventDetailsState extends State<EventDetails> {
 
   @override
   Widget build(BuildContext context) {
+    String currentUserUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+    bool isCurrentUserEventOwner = widget.userid == currentUserUid;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.eventName),
@@ -115,32 +135,65 @@ class _EventDetailsState extends State<EventDetails> {
                 child: Text(widget.eventDetails, style: TextStyle(fontSize: 16)),
               ),
               SizedBox(height: 25),
+              // Show the "Get Location" button always
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  StyledButton(
-                    text: isFollowing ? 'Unfollow' : 'Follow',
-                    verticalPadding: 10,
-                    onPressed: () {
-                      setState(() {
-                        //use this to track following
-                        isFollowing = !isFollowing;
-                      });
-                    },
-                  ),
                   StyledButton(
                     text: "Get Location",
                     verticalPadding: 10,
-                    onPressed: () 
-                    {
+                    onPressed: () {
                       setState(() {
                         // open location gmap
                       });
                     },
-                    
                   ),
                 ],
               ),
+              SizedBox(height: 10),
+              // Show the follow/unfollow button only if the current user is not the event owner
+              if (!isCurrentUserEventOwner)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    StyledButton(
+                      text: isFollowing ? 'Unfollow' : 'Follow',
+                      verticalPadding: 10,
+                      onPressed: () async {
+                        // Check if the user is currently following the event
+                        if (isFollowing) {
+                          // Unfollow the event by removing it from the followed events collection
+                          try {
+                            // Get the current user's ID
+                            String currentUserUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+                            // Delete the document from the followed events collection
+                            await EventsDatabase().deleteFollowedEvent(currentUserUid, widget.eventId);
+                            // Update the UI to reflect that the user is not following the event anymore
+                            setState(() {
+                              isFollowing = false;
+                            });
+                          } catch (e) {
+                            print('Error unfollowing event: $e');
+                          }
+                        } else {
+                          // Follow the event by storing it in the followed events collection
+                          try {
+                            // Get the current user's ID
+                            String currentUserUid = FirebaseAuth.instance.currentUser?.uid ?? '';
+                            // Store the followed event in Firestore
+                            await EventsDatabase().storeFollowedEvent(currentUserUid, widget.userid, widget.eventId);
+                            // Update the UI to reflect that the user is now following the event
+                            setState(() {
+                              isFollowing = true;
+                            });
+                          } catch (e) {
+                            print('Error following event: $e');
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                ),
             ],
           ),
         ),
