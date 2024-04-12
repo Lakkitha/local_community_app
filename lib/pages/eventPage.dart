@@ -16,10 +16,7 @@ class _EventPageState extends State<EventPage> {
   int _currentPage = 0;
   int _pageSize = 10;
   bool _isLoading = false;
-  List<Map<String, dynamic>> events = [
-    // Add your events here
-    // Assuming you have more events...
-  ];
+  List<Map<String, dynamic>> events = [];
 
   ScrollController _scrollController = ScrollController();
 
@@ -45,23 +42,20 @@ class _EventPageState extends State<EventPage> {
     }
   }
 
-  Future<void> _refreshData() async 
-  {
+  Future<void> _refreshData() async {
     setState(() {
       _currentPage = 0;
       events.clear(); // Clear existing events
     });
 
-    setState(() 
-    {
+    setState(() {
       // Add logic to fetch new events and populate the list
       // For demonstration purpose, I'm just adding some dummy events again
       _loadMoreData();
     });
   }
 
-  void _loadMoreData() async 
-  {
+  void _loadMoreData() async {
     if (!_isLoading) {
       setState(() {
         _isLoading = true;
@@ -77,37 +71,46 @@ class _EventPageState extends State<EventPage> {
     }
   }
 
-  Future<void> _fetchEvents() async 
-  {
-    List<Map<String, dynamic>> newEvents = await EventsDatabase.getAllEvents();
-    if (newEvents.isNotEmpty) {
-      setState(() {
-        events.addAll(newEvents);
+  Future<void> _fetchEvents() async {
+    events.clear();
 
-        _currentPage++;
-      });
+    if (filtervalue == 0) {
+      // Global filter
+      List<Map<String, dynamic>> newEvents = await EventsDatabase.getAllEvents();
+      if (newEvents.isNotEmpty) {
+        setState(() {
+          events.addAll(newEvents);
+          _currentPage++;
+        });
+      }
+    } else if (filtervalue == 2) {
+      // Following filter
+      List<Map<String, dynamic>> followedEvents = await EventsDatabase.getAllFollowedEventsUser(filterOnly: true);
+      print(followedEvents);
+
+      if (followedEvents.isNotEmpty) {
+        setState(() {
+          events.addAll(followedEvents);
+          _currentPage++;
+        });
+      }
     }
   }
 
-  List<Map<String, dynamic>> getPaginatedEvents() 
-  {
-    int startIndex = _currentPage * _pageSize;
-    int endIndex = startIndex + _pageSize;
-
-    if (startIndex >= events.length) 
-    {
-      return [];
-    }
-
-    return events.sublist(startIndex, endIndex.clamp(0, events.length));
+  List<Map<String, dynamic>> filterEventsByName(String searchText) {
+    return events.where((event) {
+      String eventName = event['event_name'].toLowerCase();
+      return eventName.contains(searchText.toLowerCase());
+    }).toList();
   }
+
+  String _searchText = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: Padding(
-
           padding: const EdgeInsets.only(top: 5.0, left: 20.0, right: 4.0, bottom: 4.0),
           child: Image.asset('assets/images/logo.png'), // Replace with your logo image path
         ),
@@ -123,7 +126,9 @@ class _EventPageState extends State<EventPage> {
             ),
           ),
           onChanged: (value) {
-            // Implement your search logic here
+            setState(() {
+              _searchText = value;
+            });
           },
         ),
         automaticallyImplyLeading: false,
@@ -131,30 +136,31 @@ class _EventPageState extends State<EventPage> {
           preferredSize: Size.fromHeight(50.0),
           child: Padding(
             padding: EdgeInsets.all(10.0),
-            child: Row(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  child: CupertinoSlidingSegmentedControl<int>(
-                    thumbColor: Colors.lightBlueAccent,
-                    children: {
-                      0: Text('Global'),
-                      1: Text('Local'),
-                    },
-                    groupValue: filtervalue,
-                    onValueChanged: (int? newValue) {
-                      setState(() {
-                        //Use the Filter logic here
-                        filtervalue = newValue!;
-                        print("Filter Value: $filtervalue");
-                      });
-                    },
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.event),
-                  onPressed: () {
-                    // Add Followed Event Logic here
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: CupertinoSlidingSegmentedControl<int>(
+                        thumbColor: Colors.lightBlueAccent,
+                        children: {
+                          0: Text('Global'),
+                          1: Text('Local'),
+                          2: Text('Following'),
+                        },
+                        groupValue: filtervalue,
+                        onValueChanged: (int? newValue) {
+                          setState(() {
+                            filtervalue = newValue!;
+                            _loadMoreData();
+                            print("Filter Value: $filtervalue");
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -165,15 +171,15 @@ class _EventPageState extends State<EventPage> {
         onRefresh: _refreshData,
         child: ListView.builder(
           controller: _scrollController,
-          itemCount: events.length + (_isLoading ? 1 : 0),
+          itemCount: filterEventsByName(_searchText).length + (_isLoading ? 1 : 0),
           itemBuilder: (BuildContext context, int index) {
-            if (index == events.length && _isLoading) {
+            List<Map<String, dynamic>> filteredEvents = filterEventsByName(_searchText);
+            if (index == filteredEvents.length && _isLoading) {
               return Center(
                 child: CircularProgressIndicator(),
               );
             } else {
-              final event = events[index];
-              print(event);
+              final event = filteredEvents[index];
 
               // Use FutureBuilder to asynchronously get the event organizer's username
               return FutureBuilder<String?>(

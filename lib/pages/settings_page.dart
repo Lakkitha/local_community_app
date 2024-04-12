@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -91,11 +92,12 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 Divider(),
                 ListTile(
-                  leading: Icon(Icons.info),
-                  title: Text('About'),
-                  trailing: Icon(Icons.arrow_forward_ios),
+                  leading: Icon(Icons.exit_to_app),
+                  title: Text('Sign Out'),
                   onTap: () {
                     // Navigate to about page
+                      FirebaseAuth.instance.signOut();
+                      Navigator.pushNamed(context, "/login");
                   },
                 ),
               ],
