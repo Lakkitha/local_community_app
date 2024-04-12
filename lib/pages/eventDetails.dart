@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:local_community_app/database/eventsdb.dart';
 import 'package:local_community_app/location/eventLocation.dart';
 import 'package:local_community_app/util/styled_button.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EventDetails extends StatefulWidget {
   final String userid;
@@ -54,6 +55,49 @@ class _EventDetailsState extends State<EventDetails> {
     } catch (e) {
       print('Error checking if event is followed: $e');
     }
+  }
+
+  void _showMapDialog() {
+    GeoPoint geoPoint = EventLocation.convertStringToGeoPoint(widget.eventLocation);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Event Location'),
+          content: Container(
+            height: 400,
+            width: 400,
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: LatLng(geoPoint.latitude, geoPoint.longitude),
+                zoom: 15,
+              ),
+              markers: {
+                Marker(
+                  markerId: MarkerId(geoPoint.toString()),
+                  position: LatLng(geoPoint.latitude, geoPoint.longitude),
+                  infoWindow: InfoWindow(
+                    title: 'Event Location',
+                    snippet: '${geoPoint.latitude}, ${geoPoint.longitude}',
+                  ),
+                ),
+              },
+              mapType: MapType.normal,
+              zoomControlsEnabled: true,
+              myLocationButtonEnabled: false,
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(null); // Return none when canceled
+              },
+              child: Text('CLOSE'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> fetchAddress() async {
@@ -142,11 +186,7 @@ class _EventDetailsState extends State<EventDetails> {
                   StyledButton(
                     text: "Get Location",
                     verticalPadding: 10,
-                    onPressed: () {
-                      setState(() {
-                        // open location gmap
-                      });
-                    },
+                    onPressed: _showMapDialog,
                   ),
                 ],
               ),
